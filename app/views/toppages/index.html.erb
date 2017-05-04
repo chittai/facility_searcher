@@ -1,5 +1,35 @@
 <% if logged_in? %>
-  <p>ログイン完了ユーザ： <%= current_user.name %></p>
+  <div class="text-center">
+    <p>ログイン完了ユーザ： <%= current_user.name %></p>
+    <%= form_tag(search_path, method: :get,class: 'form-inline') do %>
+      <div class="form-group">
+        <%= text_field_tag :keyword, @keyword, class: 'form-control input-lg', placeholder: "住所を入力", size: 40 %>
+      </div>
+      <%= submit_tag '住所を検索', class: 'btn btn-success btn-lg' %>
+    <% end %>
+
+  <ul>
+    <li>TYPE : <%= @types %></li>
+    <li>FROM : <%= @search_address %></li>
+    <li>TO : <%= @search_address_to %></li>
+    <li>DISTANCE : <%= @distance %>m</li>
+  </ul>
+  
+  <div style='width: 800px;'>
+    <div id="map" style='width: 800px; height: 400px;'></div>
+  </div>
+
+  <script type="text/javascript">
+    handler = Gmaps.build('Google');
+    handler.buildMap({ provider: {}, internal: {id: 'map'}}, function(){
+      markers = handler.addMarkers(<%=raw @hash.to_json %>);
+      handler.bounds.extendWith(markers);
+      handler.fitMapToBounds();
+    });
+  </script>
+  
+  </div>
+     
 <% else %>
   <div class="center jumbotron">
     <div class="text-center">
