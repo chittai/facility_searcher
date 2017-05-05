@@ -41,7 +41,7 @@ class ToppagesController < ApplicationController
       p "types - #{@types}"
       p "distance - #{@distance}m"
       
-      @hash = [{ lat: lat_search, lng: lng_search, infowindow: "", title: ""}]
+      @hash = [{ lat: lat_search, lng: lng_search, infowindow: "", title: ""},{lat: lat, lng: lng, infowindow: "", title: ""}]
       p @hash
       
     else
