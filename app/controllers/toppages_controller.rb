@@ -7,7 +7,6 @@ class ToppagesController < ApplicationController
     
     if @keyword.present?
       search_key = @keyword
-      googlemap_api_key = 'AIzaSyBz0hP0fVRtpLY3-oNmAmzYVDvGd6pfG84'
       @types = 'convenience_store'
       
       Geocoder.configure(language: :ja, units: :km)
@@ -20,7 +19,7 @@ class ToppagesController < ApplicationController
       t1 = Geocoder.search(search_key)[0].geometry['location'].values.join(',')
         #検索した場所の緯度と経度を格納する
       
-      uri = URI.parse "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=#{lat},#{lng}&types=#{@types}&sensor=false&rankby=distance&language=ja&key=#{googlemap_api_key}"
+      uri = URI.parse "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=#{lat},#{lng}&types=#{@types}&sensor=false&rankby=distance&language=ja&key=#{@googleapi_key}"
       
       request = Net::HTTP::Get.new(uri.request_uri)
       response = Net::HTTP.start(uri.host, uri.port, use_ssl: uri.scheme == 'https') do |http|
