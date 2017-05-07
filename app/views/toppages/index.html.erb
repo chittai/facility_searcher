@@ -7,28 +7,18 @@
       </div>
       <%= submit_tag '住所を検索', class: 'btn btn-success btn-lg' %>
     <% end %>
-
-  <ul>
-    <li>TYPE : <%= @types %></li>
-    <li>FROM : <%= @search_address %></li>
-    <li>TO : <%= @search_address_to %><%= @place_name %></li>
-    <li>DISTANCE : <%= @distance %>m</li>
-  </ul>
-  
-  <ul>
-    <li>TYPE : <%= @types_second %></li>
-    <li>FROM : <%= @search_address %></li>
-    <li>TO : <%= @search_address_to_station %><%= @place_name_station%></li>
-    <li>DISTANCE : <%= @distance_station %>m</li>
-  </ul>
-  
-  <ul>
-    <li>TYPE : <%= @types_third %></li>
-    <li>FROM : <%= @search_address %></li>
-    <li>TO : <%= @search_address_to_hospital %><%= @place_name_hospital%></li>
-    <li>DISTANCE : <%= @distance_hospital %>m</li>
-  </ul>
-  
+    
+    <p>FROM : <%= @search_address %></p>
+    
+    <% @facility_information.each_with_index do |info,index| %>
+      <ul>
+        <li>TYPE : <%= @types_array[index] %></li>
+        <li>TO : <%= info[:address] %></li>
+        <li>NAME : <%= info[:name] %></li>
+        <li>DISTANCE : <%= info[:distance] %></li>
+      </ul>
+    <% end %>
+    
   <div style='width: 800px;'>
     <div id="map" style='width: 800px; height: 400px;'></div>
   </div>
