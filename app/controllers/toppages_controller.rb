@@ -2,19 +2,15 @@ class ToppagesController < ApplicationController
   include ToppagesHelper
   
   def index
+    
     @keyword=params[:keyword]
-    place = []
     @googleapi_key = ENV['GOOGLEMAP_API_KEY']
     
     if @keyword.present?
       
-      #facility_search(@keyword, @googleapi_key)
-      search_key = @keyword
+      facility_search(@keyword, @googleapi_key)
       
-      #検索したい施設のタイプ情報
-      @types = 'convenience_store'
-      @types_second = 'train_station'
-      @types_third = 'hospital'
+      search_key = @keyword
       
       Geocoder.configure(language: :ja, units: :km)
       
@@ -77,7 +73,7 @@ class ToppagesController < ApplicationController
       location_second = place_second['geometry']['location']
       @lat_search_station, @lng_search_station = location_second['lat'], location_second['lng']
       @search_address_to_station = Geocoder.address("#{@lat_search_station},#{@lng_search_station}")
-      @place_name_station = place['name']
+      @place_name_station = place_second['name']
       @distance_station = Geocoder::Calculations.distance_between(t1,"#{@lat_search_station},#{@lng_search_station}").round(3)*1000
       
       #病院で最も近い役の情報を取得して処理する
@@ -85,7 +81,7 @@ class ToppagesController < ApplicationController
       location_third = place_third['geometry']['location']
       @lat_search_hospital, @lng_search_hospital = location_third['lat'], location_third['lng']
       @search_address_to_hospital = Geocoder.address("#{@lat_search_hospital},#{@lng_search_hospital}")
-      @place_name_hospital = place['name']
+      @place_name_hospital = place_third['name']
       @distance_hospital = Geocoder::Calculations.distance_between(t1,"#{@lat_search_hospital},#{@lng_search_hospital}").round(3)*1000
       
       puts '====='

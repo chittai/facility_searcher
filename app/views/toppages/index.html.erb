@@ -11,21 +11,21 @@
   <ul>
     <li>TYPE : <%= @types %></li>
     <li>FROM : <%= @search_address %></li>
-    <li>TO : <%= @search_address_to %></li>
+    <li>TO : <%= @search_address_to %><%= @place_name %></li>
     <li>DISTANCE : <%= @distance %>m</li>
   </ul>
   
   <ul>
     <li>TYPE : <%= @types_second %></li>
     <li>FROM : <%= @search_address %></li>
-    <li>TO : <%= @search_address_to_station %></li>
+    <li>TO : <%= @search_address_to_station %><%= @place_name_station%></li>
     <li>DISTANCE : <%= @distance_station %>m</li>
   </ul>
   
   <ul>
     <li>TYPE : <%= @types_third %></li>
     <li>FROM : <%= @search_address %></li>
-    <li>TO : <%= @search_address_to_hospital %></li>
+    <li>TO : <%= @search_address_to_hospital %><%= @place_name_hospital%></li>
     <li>DISTANCE : <%= @distance_hospital %>m</li>
   </ul>
   
@@ -95,9 +95,11 @@
       handler.bounds.extendWith(markers);
       handler.fitMapToBounds();
       handler.getMap().setZoom(18);
+      
       directionsDisplay.setMap(handler.getMap());
       directionsDisplay_second.setMap(handler.getMap());
       directionsDisplay_third.setMap(handler.getMap());
+      
     });
 
   </script>
