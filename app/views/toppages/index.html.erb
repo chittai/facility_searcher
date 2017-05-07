@@ -15,32 +15,77 @@
     <li>DISTANCE : <%= @distance %>m</li>
   </ul>
   
+  <ul>
+    <li>TYPE : <%= @types_second %></li>
+    <li>FROM : <%= @search_address %></li>
+    <li>TO : <%= @search_address_to_station %></li>
+    <li>DISTANCE : <%= @distance_station %>m</li>
+  </ul>
+  
+  <ul>
+    <li>TYPE : <%= @types_third %></li>
+    <li>FROM : <%= @search_address %></li>
+    <li>TO : <%= @search_address_to_hospital %></li>
+    <li>DISTANCE : <%= @distance_hospital %>m</li>
+  </ul>
+  
   <div style='width: 800px;'>
     <div id="map" style='width: 800px; height: 400px;'></div>
   </div>
 
   <script type="text/javascript">
     var directionsDisplay = new google.maps.DirectionsRenderer();
+    var directionsDisplay_second = new google.maps.DirectionsRenderer();
+    var directionsDisplay_third = new google.maps.DirectionsRenderer();
     var directionsService = new google.maps.DirectionsService();
     
     function calcRoute() {
-      var origin      = new google.maps.LatLng("<%= @lat %>,<%= @lng %>");
-      var destination = new google.maps.LatLng("<%= @lat_search %>,<%= @lng_search %>");
-      console.log(origin);
-
+      var origin      = new google.maps.LatLng(<%= @lat %>,<%= @lng %>);
+      var destination = new google.maps.LatLng(<%= @lat_search %>,<%= @lng_search %>);
+      var destination_station = new google.maps.LatLng(<%= @lat_search_station %>,<%= @lng_search_station %>);
+      var destination_hospital = new google.maps.LatLng(<%= @lat_search_hospital %>,<%= @lng_search_hospital %>);
+      
       var request = {
       origin:      origin,
       destination: destination,
       travelMode:  google.maps.TravelMode.WALKING
        };
+       
+      var request_second = {
+      origin:      origin,
+      destination: destination_station,
+      travelMode:  google.maps.TravelMode.WALKING
+       };
+       
+     var request_third = {
+      origin:      origin,
+      destination: destination_hospital,
+      travelMode:  google.maps.TravelMode.WALKING
+       };
 
+       
       directionsService.route(request, function(response, status) {
+        console.log(response);
         if (status == google.maps.DirectionsStatus.OK) {
           directionsDisplay.setDirections(response);
         }
       });
+    
+    
+      directionsService.route(request_second, function(response_second, status) {
+        console.log(response_second);
+        if (status == google.maps.DirectionsStatus.OK) {
+          directionsDisplay_second.setDirections(response_second);
+        }
+      });
+      
+      directionsService.route(request_third, function(response_third, status) {
+        console.log(response_third);
+        if (status == google.maps.DirectionsStatus.OK) {
+          directionsDisplay_third.setDirections(response_third);
+        }
+      });
     }
-    console.log(status);
     
     calcRoute();
     
@@ -51,6 +96,8 @@
       handler.fitMapToBounds();
       handler.getMap().setZoom(18);
       directionsDisplay.setMap(handler.getMap());
+      directionsDisplay_second.setMap(handler.getMap());
+      directionsDisplay_third.setMap(handler.getMap());
     });
 
   </script>
