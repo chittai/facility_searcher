@@ -2,8 +2,8 @@
   <div class="row">
       <div class="col-xs-offset-2 col-xs-8">
         <div class="text-center">
-          <p>施設①〜③を選択して住所を検索すると、その住所からもっとも近い施設①〜③の情報を返します。</p>
-          <p>出かけ先や引越し先周辺の施設を調べたい時に検索してみてください！</p>
+          <p>住所を検索するときに、近くにあって欲しい施設を選択してみよう。</p>
+          <p>特に、出かけ先や引越し先周辺の施設を調べたい時に検索してみてください！</p>
           <p>検索した住所から施設までの距離と、その施設の優先度によって、点数が表示されます。</p>
           <%= form_tag(search_path, method: :get,class: 'form-inline') do %>
             <div class="form-group">
@@ -122,6 +122,7 @@
             </thead>  
           
           <tbody>
+          <% sum = 0 %>
           <% @facility_information.each_with_index do |info,index| %>
             <tr>
               <th> <%= index+1 %> </th>
@@ -129,6 +130,7 @@
               <td> <%= info[:name] %></td>
               <td> <%= info[:distance] %>m</td>
               <td> <%= calCoefficien(index)*calScore(info[:distance]) %>点</td>
+              <% sum = sum + calCoefficien(index)*calScore(info[:distance]) %>
             </tr>
               
           <% end %>
@@ -137,8 +139,8 @@
           
           <div class="center jumbotron">
             <div class="text-center">
-              <h1>あなたが検索した住所の点数は...</h1>
-              <%=  %>点
+              <p>あなたが検索した住所の点数は...</p>
+              <h1><%= sum  %> / 800点</h1>
             </div>
           </div>
           
