@@ -65,8 +65,8 @@ module ToppagesHelper
       
       else
         if index == @uri_array.size-1
-        flash.now[:danger]='検索に失敗しました。範囲内に施設がない可能性があります。'
-        render 'toppages/index'
+          flash.now[:danger]='検索に失敗しました。50km内に施設がない可能性があります。'
+          render 'toppages/index'
         end
       end
     end  
