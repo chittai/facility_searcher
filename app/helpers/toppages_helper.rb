@@ -4,7 +4,6 @@ module ToppagesHelper
     search_key = keyword
 
     @types_array = [params[:facility_first],params[:facility_second],params[:facility_third]]
-    #@types_array = ['convenience_store','train_station','hospital']
     
     @types = 'convenience_store'
     @types_second = 'train_station'
@@ -23,6 +22,7 @@ module ToppagesHelper
     @uri_array = [] 
     @types_array.each do |type|
       uri = URI.parse "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=#{@lat},#{@lng}&types=#{type}&sensor=false&rankby=distance&language=ja&key=#{@googleapi_key}"
+      p uri
       @uri_array << uri
     end
     
@@ -35,7 +35,7 @@ module ToppagesHelper
     
     #GoogleMAP APIを使用するためのURI情報使用して、JSONをとってくる
     #URIは@uri_arrayに配列として格納
-    @uri_array.each do |uri|
+    @uri_array.each_with_index do |uri, index|
       request = Net::HTTP::Get.new(uri.request_uri)
       response = Net::HTTP.start(uri.host, uri.port, use_ssl: uri.scheme == 'https') do |http|
         http.request(request)
@@ -45,22 +45,30 @@ module ToppagesHelper
       body = JSON.parse(response.body)
       results = body['results']
       
-      #JSONの情報から必要な情報を抜き出す
-      #最も近い施設
-      place =  results.first
-      location = place['geometry']['location']
-      #緯度・経度
-      @lat_search, @lng_search = location['lat'], location['lng']
-      #住所
-      @search_address_to = Geocoder.address("#{@lat_search},#{@lng_search}")
-      #施設名
-      @place_name = place['name']
-      #検索した住所から施設までの距離(m)
-      @distance = Geocoder::Calculations.distance_between(@t1,"#{@lat_search},#{@lng_search}").round(3)*1000
+      if results.any?
+        #JSONの情報から必要な情報を抜き出す
+        #最も近い施設
+        place =  results.first
+        location = place['geometry']['location']
+        #緯度・経度
+        @lat_search, @lng_search = location['lat'], location['lng']
+        #住所
+        @search_address_to = Geocoder.address("#{@lat_search},#{@lng_search}")
+        #施設名
+        @place_name = place['name']
+        #検索した住所から施設までの距離(m)
+        @distance = Geocoder::Calculations.distance_between(@t1,"#{@lat_search},#{@lng_search}").round(3)*1000
+        
+        @facility_information << {address: @search_address_to, name: @place_name, distance: @distance}
+        
+        @hash << { lat: @lat_search, lng: @lng_search, infowindow: "", title: ""}
       
-      @facility_information << {address: @search_address_to, name: @place_name, distance: @distance}
-      
-      @hash << { lat: @lat_search, lng: @lng_search, infowindow: "", title: ""}
+      else
+        if index == @uri_array.size-1
+        flash.now[:danger]='検索に失敗しました。範囲内に施設がない可能性があります。'
+        render 'toppages/index'
+        end
+      end
     end  
     
     def type_searcher(type)

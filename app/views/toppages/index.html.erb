@@ -28,7 +28,7 @@
             <%= submit_tag '住所を検索', class: 'btn btn-success btn-lg' %>
           <% end %>
         
-        <% if @keyword.present? %>
+        <% if @keyword.present? && @hash[1] != nil %>
         
           <p>FROM : <%= @search_address %></p>
           
@@ -145,6 +145,7 @@
           </div>
           
           </div>
+        
         <% end %>
       </div>
     </div>
