@@ -2,6 +2,7 @@ class SessionsController < ApplicationController
   def new
   end
 
+  #ログイン処理
   def create
     email=params[:session][:email].downcase
     password=params[:session][:password]

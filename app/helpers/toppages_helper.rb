@@ -3,21 +3,17 @@ module ToppagesHelper
 
     search_key = keyword
 
+    #今回選んだtypeの情報を配列として格納。view で使用する
     @types_array = [params[:facility_first],params[:facility_second],params[:facility_third]]
-    
-    @types = 'convenience_store'
-    @types_second = 'train_station'
-    @types_subway_station = 'subway_station'
-    @types_third = 'hospital'
     
     #検索したい場所の住所
     @search_address = Geocoder.address(search_key)
   
-    #検索した場所の緯度経度
+    #検索した場所の緯度と経度をt1に格納する
     @lat = Geocoder.search(search_key)[0].geometry['location'].values[0]
     @lng = Geocoder.search(search_key)[0].geometry['location'].values[1]
-    #検索した場所の緯度と経度をt1に格納する
     @t1 = Geocoder.search(search_key)[0].geometry['location'].values.join(',')
+
 
     @uri_array = [] 
     @types_array.each do |type|
@@ -26,7 +22,7 @@ module ToppagesHelper
       @uri_array << uri
     end
     
-    #GoogleMAPj上にMarkerを配置するための@hashを初期化している。
+    #Google MAP上にMarkerを配置するための@hashを初期化している。
     #初期化時に検索した住所の情報を格納
     @hash = [{lat: @lat, lng: @lng, infowindow: "", title: ""}]
     
@@ -46,8 +42,8 @@ module ToppagesHelper
       results = body['results']
       
       if results.any?
-        #JSONの情報から必要な情報を抜き出す
-        #最も近い施設
+        ##JSONの情報から必要な情報を抜き出す
+        #最も近い施設の情報をjsonで取得
         place =  results.first
         location = place['geometry']['location']
         #緯度・経度
@@ -71,11 +67,14 @@ module ToppagesHelper
       end
     end  
     
+    #view の中で呼び出されたtypeの日本語名を返す
     def type_searcher(type)
       @types_list = {'convenience_store' => 'コンビニエンスストア', 'train_station' => '駅', 'hospital' => '病院'}
       return @types_list[type]
     end
       
+    
+    #距離から点数を計算
     def calScore(distance)
       @facility_score = 0
       
@@ -105,6 +104,7 @@ module ToppagesHelper
     end
     
     
+    #選んだ優先度によって、係数を計算している。calScoreで出した点数に掛ける
     def calCoefficien(index)
       
       @coefficient = 0
