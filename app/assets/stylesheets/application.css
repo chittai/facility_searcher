@@ -13,3 +13,9 @@
  *= require_tree .
  *= require_self
  */
+
+table {
+width:100%;
+table-layout: fixed;
+word-break: break-all;　　/*追加する*/
+}

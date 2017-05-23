@@ -1,41 +1,52 @@
 <% if logged_in? %>
   <div class="row">
-      <div>
-        <div class="text-center">
+    <div>
+      <div class="text-center">
+        <div class="col-sm-12">
           <p>住所を検索するときに、近くにあって欲しい施設を選択してみよう。</p>
           <p>特に、出かけ先や引越し先周辺の施設を調べたい時に検索してみてください！</p>
           <p>検索した住所から施設までの距離と、その施設の優先度によって、点数が表示されます。</p>
+        </div>
+        <div class="col-sm-12">
           <%= form_tag(search_path, method: :get,class: 'form-horizontal') do %>
             <div class="form-group">
-                <%= label_tag :facility_first, '優先度No.1_施設', class: 'col-sm-2 control-label'%>
-              <div class="col-sm-10">
-                <%= select @facility_first, :facility_first, {コンビニエンスストア: "convenience_store",電車の駅: "train_station", 病院: "hospital"}, {},class: 'form-control' ,style: 'width: 350px' %>
+              <%= label_tag :facility_1, '優先度No.1_施設', class: 'col-sm-offset-2 col-sm-2 control-label'%>
+              <div class="col-sm-6">
+                <%= select @facility_1, :facility_1, {コンビニエンスストア: "convenience_store",電車の駅: "train_station", 病院: "hospital"}, {},class: 'form-control' %>
               </div>
             </div>
+            
             <div class="form-group">
-                <%= label_tag :facility_second, '優先度No.2_施設',class: 'col-sm-2 control-label' %>
-              <div class="col-sm-10">
-                <%= select @facility_second, :facility_second, {コンビニエンスストア: "convenience_store",電車の駅: "train_station", 病院: "hospital"}, {}, class: 'form-control' ,style: 'width: 350px' %>
+              <%= label_tag :facility_2, '優先度No.2_施設',class: 'col-sm-offset-2 col-sm-2 control-label' %>
+              <div class="col-sm-6">
+                <%= select @facility_2, :facility_2, {コンビニエンスストア: "convenience_store",電車の駅: "train_station", 病院: "hospital"}, {}, class: 'form-control' %>
               </div>
             </div>
+            
             <div class="form-group">
-                <%= label_tag :facility_third, '優先度No.3_施設', class: 'col-sm-2 control-label' %>
-              <div class="col-sm-10">
-                <%= select @facility_third, :facility_third,  {コンビニエンスストア: "convenience_store",電車の駅: "train_station", 病院: "hospital"}, {}, class: 'form-control' ,style: 'width: 350px'%>
+              <%= label_tag :facility_3, '優先度No.3_施設', class: 'col-sm-offset-2 col-sm-2 control-label' %>
+              <div class="col-sm-6">
+                <%= select @facility_3, :facility_3,  {コンビニエンスストア: "convenience_store",電車の駅: "train_station", 病院: "hospital"}, {}, class: 'form-control'%>
               </div>
             </div>
             <p></p>
             <p>↓に住所を入れて検索してみよう！</p>
+            
             <div class="form-group">
+              <div class="col-sm-12">
                 <%= text_field_tag :keyword, @keyword, class: 'form-control input-lg', placeholder: "住所を入力" %>
+              </div>
             </div>
+            
             <div class="form-group">
+              <div class="col-sm-12">
                 <%= submit_tag '住所を検索', class: 'btn btn-success btn-lg btn-block' %>
+              </div>
             </div>
           <% end %>
-        
+        </div>
         <% if @keyword.present? && @hash[1] != nil %>
-        
+      
           <p>FROM : <%= @search_address %></p>
           
           <div style='width: 800px;'>
@@ -108,50 +119,46 @@
           </script>
           
           <br>
-          
-          <div class="panel panel-default text-left" style='width: 800px;'>  
-            <div class="panel-heading">
-              最も近い施設(Closest facility)
+          <div class="col-sm-12">          
+            <div class="panel panel-default text-left" style='width: 800px;'>  
+              <div class="panel-heading">
+                最も近い施設(Closest facility)
+              </div>
+              <div class="table-responsive">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>NUMBER</th>
+                      <th>TYPE</th>
+                      <th>NAME</th>
+                      <th>DISTANCE</th>
+                      <th>SCORE</th>
+                      <th></th>
+                    </tr>
+                  </thead>  
+                  <tbody>
+                    <% sum = 0 %>
+                    <% @facility_information.each_with_index do |info,index| %>
+                      <tr>
+                        <th> <%= index+1 %> </th>
+                        <td> <%= type_searcher(@types_array[index]) %></td>
+                        <td> <%= info[:name] %></td>
+                        <td> <%= info[:distance] %>m</td>
+                        <td> <%= calCoefficien(index)*calScore(info[:distance]) %>点</td>
+                        <% sum = sum + calCoefficien(index)*calScore(info[:distance]) %>
+                      </tr>
+                    <% end %>
+                  </tbody>
+                </table>
+              </div>
             </div>
-            
-          
-          <table class="table">
-            <thead>
-              <tr>
-                <th>NUMBER</th>
-                <th>TYPE</th>
-                <th>NAME</th>
-                <th>DISTANCE</th>
-                <th>SCORE</th>
-                <th></th>
-              </tr>
-            </thead>  
-          
-          <tbody>
-          <% sum = 0 %>
-          <% @facility_information.each_with_index do |info,index| %>
-            <tr>
-              <th> <%= index+1 %> </th>
-              <td> <%= type_searcher(@types_array[index]) %></td>
-              <td> <%= info[:name] %></td>
-              <td> <%= info[:distance] %>m</td>
-              <td> <%= calCoefficien(index)*calScore(info[:distance]) %>点</td>
-              <% sum = sum + calCoefficien(index)*calScore(info[:distance]) %>
-            </tr>
-              
-          <% end %>
-          </tbody>
-          </table>
-          
+          </div>
           <div class="center jumbotron">
             <div class="text-center">
               <p>あなたが検索した住所の点数は...</p>
               <h1><%= sum  %> / 800点</h1>
             </div>
           </div>
-          
-          </div>
-        
         <% end %>
       </div>
     </div>

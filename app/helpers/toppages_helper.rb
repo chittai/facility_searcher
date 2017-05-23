@@ -4,7 +4,7 @@ module ToppagesHelper
     search_key = keyword
 
     #今回選んだtypeの情報を配列として格納。view で使用する
-    @types_array = [params[:facility_first],params[:facility_second],params[:facility_third]]
+    @types_array = [params[:facility_1],params[:facility_2],params[:facility_3]]
     
     #検索したい場所の住所
     @search_address = Geocoder.address(search_key)
