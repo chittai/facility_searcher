@@ -27,9 +27,11 @@
             <p></p>
             <p>↓に住所を入れて検索してみよう！</p>
             <div class="form-group">
-              <%= text_field_tag :keyword, @keyword, class: 'form-control input-lg', placeholder: "住所を入力", size: 40 %>
+                <%= text_field_tag :keyword, @keyword, class: 'form-control input-lg', placeholder: "住所を入力" %>
             </div>
-            <%= submit_tag '住所を検索', class: 'btn btn-success btn-lg' %>
+            <div class="form-group">
+                <%= submit_tag '住所を検索', class: 'btn btn-success btn-lg btn-block' %>
+            </div>
           <% end %>
         
         <% if @keyword.present? && @hash[1] != nil %>
